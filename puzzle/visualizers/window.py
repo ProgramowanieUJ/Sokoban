@@ -39,9 +39,9 @@ class Window(object):
 
     def new_surface(self):
         """creates new display"""
-        # return pygame.display.set_mode((self.window_width, self.window_height))
-        return pygame.display.set_mode((self.window_width, self.window_height),
-                                       pygame.FULLSCREEN, 32)
+        return pygame.display.set_mode((self.window_width, self.window_height))
+        # return pygame.display.set_mode((self.window_width, self.window_height),
+        #                               pygame.FULLSCREEN, 32)
 
     def display(self, command):
         """respond to players command"""
@@ -165,7 +165,7 @@ class Window(object):
             pygame.display.update()
 
         if level_a.is_finished() or level_b.is_finished():
-            return self.loop("break")
+            return self.loop("next")
         return self.loop("dual")
 
     def display_solo_game(self):
@@ -184,7 +184,7 @@ class Window(object):
             pygame.display.update()
 
         if self.level[0].is_finished():
-            return self.loop("break")
+            return self.loop("next")
 
         return self.loop("solo")
 

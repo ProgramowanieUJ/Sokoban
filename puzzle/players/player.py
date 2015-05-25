@@ -13,9 +13,10 @@ class Player(object):
                          "freeze": self.freeze,
                          "solo": self.move_in_solo_mode,
                          "dual": self.move_in_dual_mode,
-                         "next": self.switch_levels}
+                         "switch": self.switch_levels}
         self.solo_dictionary = {key.K_LEFT: "left_A", key.K_RIGHT: "right_A", key.K_UP: "up_A",
-                                key.K_DOWN: "down_A", key.K_TAB: "start", key.K_BACKSPACE: "reload"}
+                                key.K_DOWN: "down_A", key.K_TAB: "start", key.K_BACKSPACE: "reload",
+                                key.K_n: "next", key.K_p: "previous"}
         self.dual_dictionary = {key.K_a: "left_B", key.K_d: "right_B",
                                 key.K_w: "up_B", key.K_s: "down_B"}
         self.dual_dictionary.update(self.solo_dictionary)
@@ -73,8 +74,9 @@ class Player(object):
                 return self.dual_dictionary[event.key]
         return "freeze"
 
-    def switch_levels(self, event):
+    @staticmethod
+    def switch_levels(event):
         """called by game engine to switch to next level"""
         # i need event variable for uniform function call in command
         event.key = key.KEYDOWN     # use the variable to silence a warning
-        return self.last_command
+        return "reload"

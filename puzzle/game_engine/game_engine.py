@@ -20,21 +20,30 @@ class PlainGameEngine(object):
         """loads level using the level reader"""
         return self.level_reader.read_levels_file(level_file)
 
-    def switch_level(self, index):
+    def switch_level(self, command, index):
         """sets the level the window is supposed to show"""
-        if index < len(self.levels) - 1:
-            self.window.level = self.levels[index+1]
+        if command == "next":
+            if index < len(self.levels) - 1:
+                self.window.level = self.levels[index+1]
+                index += 1
+        elif command == "previous":
+            if index > 0:
+                self.window.level = self.levels[index-1]
+                index -= 1
+        return index
 
     def run(self):
         """the game's main loop"""
-        self.window.level = self.levels[0]
+        index = 0
+        self.window.level = self.levels[index]
         keyword, event = self.window.display("start")
 
-        for index in range(len(self.levels)):
+        while index < len(self.levels):
 
-            while keyword != "break":
+            while keyword != "next" and keyword != "previous":
                 keyword = self.player.command(keyword, event)
-                keyword, event = self.window.display(keyword)
+                if keyword != "next" and keyword != "previous":
+                    keyword, event = self.window.display(keyword)
 
-            self.switch_level(index)
-            keyword = "next"
+            index = self.switch_level(keyword, index)
+            keyword = "switch"
