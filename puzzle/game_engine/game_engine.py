@@ -5,37 +5,25 @@ from puzzle.players.player import Player
 from puzzle.levels import LevelReader
 
 
-class PlainGameEngine(object):
-    """this is the game engine that uses loaded level files"""
+class GameEngine(object):
+    """abstract game engine, not meant to be run as is"""
 
-    def __init__(self, level_file):
+    def __init__(self):
         """initializes game engine with the level file"""
         self.window = Window()
         self.player = Player()
 
         self.level_reader = LevelReader()
-        self.levels = self.load_levels(level_file)
-
-    def load_levels(self, level_file):
-        """loads level using the level reader"""
-        return self.level_reader.read_levels_file(level_file)
+        self.levels = []
 
     def switch_level(self, command, index):
-        """sets the level the window is supposed to show"""
-        if command == "next":
-            if index < len(self.levels) - 1:
-                self.window.level = self.levels[index+1]
-                index += 1
-        elif command == "previous":
-            if index > 0:
-                self.window.level = self.levels[index-1]
-                index -= 1
-        return index
+        """method that has be implemented in child classes"""
+        pass
 
     def run(self):
         """the game's main loop"""
-        index = 0
-        self.window.level = self.levels[index]
+        index = -1
+        self.switch_level("next", index)
         keyword, event = self.window.display("start")
 
         while index < len(self.levels):

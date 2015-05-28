@@ -86,4 +86,30 @@ class LevelReader(object):
                         self.levels.append(board)
                     level_lines = []
 
+            return self.levels
+
+    def read_file_plain(self, filename):
+        """returns board object created from file"""
+        if not path.exists(filename):
+            # run error message here
+            return None
+        else:
+            all_raw_levels = self.read_file(filename)
+
+            # clean previous data
+            self.levels = []
+
+            level_lines = []  # contains the lines for a single level's map.
+            for line in all_raw_levels:
+                line = self.clean_line(line)
+
+                if line != '':
+                    level_lines.append(line)
+                elif line == '' and len(level_lines) > 0:
+                    # level_lines contains now all lines for a single level
+                    grid = self.pad_lines(level_lines)
+                    if grid is not None:
+                        self.levels.append(grid)
+                    level_lines = []
+
         return self.levels

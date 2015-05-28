@@ -1,6 +1,6 @@
 """this script starts the game"""
 
 import os
-from puzzle.game_engine.game_engine import PlainGameEngine
+from puzzle.game_engine import PlainGameEngine
 
-PlainGameEngine(os.path.join('levels', 'sokoban.txt')).run()
+PlainGameEngine(os.path.join('game_engine', 'sokoban.txt')).run()
