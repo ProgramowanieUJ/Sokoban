@@ -25,33 +25,39 @@ class Board(object):
         start = self.starting_state["player"]
         if start is None:
             return False
-        if len(start) != 2:
-            return False
-        if not isinstance(start[0], (int, long)) or not isinstance(start[1], (int, long)):
+        if len(start) != 2 or not isinstance(start[0], (int, long)) \
+                or not isinstance(start[1], (int, long)):
             return False
         if len(self.goal_list) == 0:
             return False
         if len(self.boxes_list) < len(self.goal_list):
             return False
-        return True
 
-    def set_map(self, map_grid):
-        """establish board map, height and width"""
-        self.map_grid = Map(map_grid, self.starting_state["player"])
+        for box in self.boxes_list:
+            if box not in self.goal_list:
+                return True
+        return False
+
+    def set_map(self, map_grid, start):
+        """establish starting state, board map, height and width"""
+        self.starting_state = {"player": start,
+                               "boxes": deepcopy(self.boxes_list)}
+        self.map_grid = Map(map_grid, start)
         self.height = self.map_grid.height
         self.width = self.map_grid.width
 
+    def save_state(self):
+        """saves current state"""
+        self.starting_state = {"player": self.player,
+                               "boxes": deepcopy(self.boxes_list)}
+
     def reset(self):
         """resets board to the starting state"""
-        self.set_map(self.map_grid.map_grid)
-        self.player = self.starting_state["player"]
+        start = self.starting_state["player"]
         self.boxes_list = deepcopy(self.starting_state["boxes"])
+        self.player = start
+        self.set_map(self.map_grid.map_grid, start)
         return self
-
-    def save_state(self, start):
-        """save starting state"""
-        self.starting_state = {"player": start,
-                               "boxes": deepcopy(self.boxes_list)}
 
     def get_tile(self, position):
         """shortcut to the grid"""
@@ -73,8 +79,7 @@ class Board(object):
         mirror.goal_list = self.mirror_position_list(self.goal_list)
         mirror.boxes_list = self.mirror_position_list(self.boxes_list)
         mirror.player = start
-        mirror.save_state(start)
-        mirror.set_map(self.map_grid.map_grid[::-1])
+        mirror.set_map(self.map_grid.map_grid[::-1], start)
         return mirror
 
     def mirror_position_list(self, tile_list):

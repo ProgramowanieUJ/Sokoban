@@ -55,8 +55,7 @@ class LevelReader(object):
 
         level = self.pad_lines(level)
 
-        board.save_state(start)
-        board.set_map(level)
+        board.set_map(level, start)
         if not board.is_correct():
             return None
         else:

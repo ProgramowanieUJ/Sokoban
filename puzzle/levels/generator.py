@@ -141,8 +141,7 @@ class Generator(object):
 
     def is_wall(self, position):
         """check if position marks a wall"""
-        return self.is_inside(position) and\
-            self.map_grid[position[0]][position[1]] in ('#', 'x')
+        return self.is_inside(position) and self.map_grid[position[0]][position[1]] in ('#', 'x')
 
     def flood_fill(self, position, tile, re_tile):
         """differentiate outside floor from inside floor, to be able to decorate the outside"""
@@ -293,3 +292,4 @@ class Generator(object):
                 return False
             else:
                 return True
+        return False
