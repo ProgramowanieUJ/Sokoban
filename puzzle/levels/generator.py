@@ -36,6 +36,8 @@ class Generator(object):
         self.height = len(map_obj[0])
         self.width = len(map_obj)
         self.start = self.find_start('@')
+        if self.start is None:
+            self.start = self.find_start('+')
 
         self.templates = [Template([["o", "o"], ["o", "o"], ["o", "o"]]),
                           Template([["o", "o"], ["o", "o"]]),
@@ -56,16 +58,18 @@ class Generator(object):
         self.clean_map()
         self.flood_fill(self.start, ' ', 'o')
         self.straighten_edges()
-
         for template in self.templates:
             self.attach_template(template)
-
+        self.flood_fill(self.start, ' ', 'o')
         self.start = self.find_start('o')
 
         self.flood_fill(self.start, 'o', ' ')
         self.mark_edges(self.start, '#', "$")
+
         self.thin_walls()
+
         self.flood_fill(self.start, 'o', ' ')
+
         self.mark_edges(self.start, '$', "#")
 
         map_copy = copy.deepcopy(self.map_grid)
@@ -76,6 +80,7 @@ class Generator(object):
             else:
                 map_copy = copy.deepcopy(self.map_grid)
                 self.goal_count = 0
+        self.map_grid = map_copy
 
         self.flood_fill(self.start, ' ', 'o')
 
@@ -88,6 +93,7 @@ class Generator(object):
             else:
                 map_copy = copy.deepcopy(self.map_grid)
                 self.box_count = 0
+        self.map_grid = map_copy
 
         if self.map_grid[self.start[0]][self.start[1]] == '.':
             self.map_grid[self.start[0]][self.start[1]] = '+'
@@ -98,7 +104,9 @@ class Generator(object):
 
     def get_tile(self, position):
         """shortcut to the grid"""
-        return self.map_grid[position[0]][position[1]]
+        if self.is_inside(position):
+            return self.map_grid[position[0]][position[1]]
+        return None
 
     def clean_map(self):
         """deep copy of map, with all but floor and walls removed"""
@@ -146,18 +154,19 @@ class Generator(object):
     def flood_fill(self, position, tile, re_tile):
         """differentiate outside floor from inside floor, to be able to decorate the outside"""
         # this version walks over goals
-        x_value, y_value = position
-        if tile != re_tile and self.is_inside(position):
-            tile_pattern = self.map_grid[x_value][y_value]
-            if tile_pattern == tile:
-                self.map_grid[x_value][y_value] = re_tile
-            if tile_pattern == '.':
-                self.map_grid[x_value][y_value] = ','
-            if tile_pattern in (tile, '.'):
-                self.flood_fill((x_value - 1, y_value), tile, re_tile)
-                self.flood_fill((x_value + 1, y_value), tile, re_tile)
-                self.flood_fill((x_value, y_value - 1), tile, re_tile)
-                self.flood_fill((x_value, y_value + 1), tile, re_tile)
+        if position is not None:
+            x_value, y_value = position
+            if tile != re_tile and self.is_inside(position):
+                tile_pattern = self.map_grid[x_value][y_value]
+                if tile_pattern == tile:
+                    self.map_grid[x_value][y_value] = re_tile
+                if tile_pattern == '.':
+                    self.map_grid[x_value][y_value] = ','
+                if tile_pattern in (tile, '.'):
+                    self.flood_fill((x_value - 1, y_value), tile, re_tile)
+                    self.flood_fill((x_value + 1, y_value), tile, re_tile)
+                    self.flood_fill((x_value, y_value - 1), tile, re_tile)
+                    self.flood_fill((x_value, y_value + 1), tile, re_tile)
 
     def mark_edges(self, position, tile, re_tile):
         """mark walls at the edge of the inside area"""

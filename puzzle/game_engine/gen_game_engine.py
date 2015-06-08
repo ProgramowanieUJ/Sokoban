@@ -27,9 +27,15 @@ class GenGameEngine(GameEngine):
             else:
                 if index >= len(self.base):
                     index = 0
-                generator = Generator(self.base[index])
-                map_grid = generator.generate_board()
-                level = LevelReader().build_level(map_grid)
+
+                level = None
+                while level is None:
+                    generator = Generator(self.base[index])
+                    map_grid = generator.generate_board()
+                    level = LevelReader().build_level(map_grid)
+                    if level is None:
+                        index += 1
+
                 self.levels.append(level)
                 self.window.level = level
         elif command == "previous":

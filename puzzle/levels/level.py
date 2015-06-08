@@ -28,10 +28,13 @@ class Board(object):
         if len(start) != 2 or not isinstance(start[0], (int, long)) \
                 or not isinstance(start[1], (int, long)):
             return False
-        if len(self.goal_list) == 0:
+        if len(self.goal_list) == 0 or len(self.boxes_list) < len(self.goal_list):
             return False
-        if len(self.boxes_list) < len(self.goal_list):
-            return False
+
+        for line in self.map_grid.map_grid:
+            for element in line:
+                if element not in (' ', 'o', '$', '.', '@', '+', '*', '1', '2', '3', '4', 'x', '#'):
+                    return False
 
         for box in self.boxes_list:
             if box not in self.goal_list:
@@ -127,7 +130,9 @@ class Map(object):
 
     def get_tile(self, position):
         """shortcut to the grid"""
-        return self.map_grid[position[0]][position[1]]
+        if self.is_inside(position):
+            return self.map_grid[position[0]][position[1]]
+        return None
 
     def clean_map(self):
         """deep copy of map, with all but floor and walls removed"""
@@ -160,15 +165,16 @@ class Map(object):
 
     def flood_fill(self, position, tile, re_tile):
         """differentiate outside floor from inside floor, to be able to decorate the outside"""
-        x_value, y_value = position
-        if tile != re_tile and self.is_inside(position):
-            # print x_value, y_value, "out of", self.width, self.height
-            if self.map_grid[x_value][y_value] == tile:
-                self.map_grid[x_value][y_value] = re_tile
-                self.flood_fill((x_value - 1, y_value), tile, re_tile)
-                self.flood_fill((x_value + 1, y_value), tile, re_tile)
-                self.flood_fill((x_value, y_value - 1), tile, re_tile)
-                self.flood_fill((x_value, y_value + 1), tile, re_tile)
+        if position is not None:
+            x_value, y_value = position
+            if tile != re_tile and self.is_inside(position):
+                # print x_value, y_value, "out of", self.width, self.height
+                if self.map_grid[x_value][y_value] == tile:
+                    self.map_grid[x_value][y_value] = re_tile
+                    self.flood_fill((x_value - 1, y_value), tile, re_tile)
+                    self.flood_fill((x_value + 1, y_value), tile, re_tile)
+                    self.flood_fill((x_value, y_value - 1), tile, re_tile)
+                    self.flood_fill((x_value, y_value + 1), tile, re_tile)
 
     def decorate(self):
         """mark wall intersections as corners to display different graphics"""

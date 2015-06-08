@@ -65,8 +65,8 @@ class TestLevelReader(unittest.TestCase):
 
     def test_nonsense_data_board(self):
         """checks reaction for nonsense data"""
-        test_s = self.level_reader.read_levels_file\
-            (os.path.join("files", "data_error.txt"))
+        test_s = self.level_reader.read_levels_file(os.path.join
+                                                    ("files", "data_error.txt"))
         self.assertEqual(len(test_s), 1,
                          "Levels with errors were accepted: " + str(len(test_s) - 1))
 
@@ -80,12 +80,6 @@ class TestLevelReader(unittest.TestCase):
         """checks whether raw level boundaries are recognized"""
         test_s = self.level_reader.read_file_plain(os.path.join("files", "sokoban.txt"))
         self.assertEqual(len(test_s), 50, "Level count can't be " + str(len(test_s)))
-
-    def test_nonsense_data_plain(self):
-        """checks reaction for nonsense data"""
-        test_s = self.level_reader.read_file_plain(os.path.join("files", "data_error.txt"))
-        self.assertEqual(len(test_s), 1,
-                         "Levels with errors were accepted: " + str(len(test_s) - 1))
 
 if __name__ == '__main__':
     unittest.main()
