@@ -58,7 +58,7 @@ class TestLevelReader(unittest.TestCase):
         test_s = self.level_reader.read_levels_file(check_s)
         self.assertEqual(test_s, None, "Some file was read")
 
-    def test_check_count_board(self):
+    def test_count_board(self):
         """checks whether raw level boundaries are recognized"""
         test_s = self.level_reader.read_levels_file(os.path.join("files", "sokoban.txt"))
         self.assertEqual(len(test_s), 50, "Level count can't be " + str(len(test_s)))
@@ -76,7 +76,7 @@ class TestLevelReader(unittest.TestCase):
         test_s = self.level_reader.read_file_plain(check_s)
         self.assertEqual(test_s, None, "Some file was read")
 
-    def test_check_count_plain(self):
+    def test_count_plain(self):
         """checks whether raw level boundaries are recognized"""
         test_s = self.level_reader.read_file_plain(os.path.join("files", "sokoban.txt"))
         self.assertEqual(len(test_s), 50, "Level count can't be " + str(len(test_s)))

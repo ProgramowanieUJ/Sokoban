@@ -108,10 +108,6 @@ class Generator(object):
             return self.map_grid[position[0]][position[1]]
         return None
 
-    def clean_map(self):
-        """deep copy of map, with all but floor and walls removed"""
-        self.map_grid = [[self.clean_tile(element) for element in row] for row in self.map_grid]
-
     @staticmethod
     def clean_tile(element):
         """purge everything but floor and walls"""
@@ -119,6 +115,10 @@ class Generator(object):
             return ' '
         else:
             return element
+
+    def clean_map(self):
+        """deep copy of map, with all but floor and walls removed"""
+        self.map_grid = [[self.clean_tile(element) for element in row] for row in self.map_grid]
 
     def straighten_edges(self):
         """fills the outer edges of the map with walls"""

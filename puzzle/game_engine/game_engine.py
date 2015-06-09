@@ -23,7 +23,7 @@ class GameEngine(object):
     def run(self):
         """the game's main loop"""
         index = -1
-        self.switch_level("next", index)
+        index = self.switch_level("next", index)
         keyword, event = self.window.display("start")
 
         while index < len(self.levels):
